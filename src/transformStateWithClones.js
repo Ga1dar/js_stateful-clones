@@ -7,13 +7,11 @@
  * @return {Object[]}
  */
 function transformStateWithClones(state, actions) {
-  // write code here
   const states = [];
   let currentState = { ...state };
 
   for (const action of actions) {
     if (action.type === 'clear') {
-      // eslint-disable-next-line no-param-reassign
       currentState = {};
       states.push({ ...currentState });
     }
@@ -24,12 +22,14 @@ function transformStateWithClones(state, actions) {
     }
 
     if (action.type === 'removeProperties') {
-      for (const key of actions.keysToRemove) {
-        if (currentState[key] === actions.keysToRemove[key]) {
+      currentState = { ...currentState };
+
+      for (const key of action.keysToRemove) {
+        if (key in currentState) {
           delete currentState[key];
-          states.push({ ...currentState });
         }
       }
+      states.push({ ...currentState });
     }
   }
 
