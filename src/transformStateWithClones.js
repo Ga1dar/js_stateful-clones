@@ -11,26 +11,35 @@ function transformStateWithClones(state, actions) {
   let currentState = { ...state };
 
   for (const action of actions) {
-    if (action.type === 'clear') {
-      currentState = {};
-      states.push({ ...currentState });
-    }
-
-    if (action.type === 'addProperties') {
-      currentState = { ...currentState, ...action.extraData };
-      states.push({ ...currentState });
-    }
-
-    if (action.type === 'removeProperties') {
-      currentState = { ...currentState };
-
-      for (const key of action.keysToRemove) {
-        if (key in currentState) {
-          delete currentState[key];
-        }
+    switch (action.type) {
+      case 'clear': {
+        currentState = {};
+        break;
       }
-      states.push({ ...currentState });
+
+      case 'addProperties': {
+        currentState = { ...currentState, ...action.extraData };
+        break;
+      }
+
+      case 'removeProperties': {
+        currentState = { ...currentState };
+
+        for (const key of action.keysToRemove) {
+          if (key in currentState) {
+            delete currentState[key];
+          }
+        }
+        break;
+      }
+
+      default:
+        // eslint-disable-next-line no-console
+        console.warn(`Неизвестный тип действия: ${action.type}`);
+        break;
     }
+
+    states.push({ ...currentState });
   }
 
   return states;
